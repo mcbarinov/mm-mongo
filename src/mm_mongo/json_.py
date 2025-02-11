@@ -7,7 +7,7 @@ from json import JSONEncoder
 from typing import Any
 
 from bson import ObjectId
-from mm_std.result import Err, Ok
+from mm_std import Err, Ok
 from pydantic import BaseModel
 from pymongo.results import DeleteResult, InsertManyResult, InsertOneResult, UpdateResult
 
