@@ -1,7 +1,7 @@
 import pytest
 from pymongo.database import Database
 
-from mm_mongo.mongo import MongoConnection
+from mm_mongo import MongoConnection
 
 
 @pytest.fixture

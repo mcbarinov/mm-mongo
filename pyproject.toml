@@ -33,6 +33,7 @@ line-length = 130
 target-version = "py313"
 [tool.ruff.lint]
 select = ["ALL"]
+fixable = ["F401"]
 ignore = [
     "TC", # flake8-type-checking, TYPE_CHECKING is dangerous, for example it doesn't work with pydantic
     "A005", # flake8-builtins: stdlib-module-shadowing
@@ -55,6 +56,7 @@ ignore = [
     "TD003", # flake8-todos: missing-todo-link
     "RET503", # flake8-return: implicit-return
     "COM812", # it's used in ruff formatter
+    "T201"
 ]
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["field_validator"]
