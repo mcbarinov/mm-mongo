@@ -359,7 +359,7 @@ wheels = [
 
 [[package]]
 name = "mm-mongo"
-version = "0.2a2"
+version = "0.2a3"
 source = { editable = "." }
 dependencies = [
     { name = "mm-std" },
