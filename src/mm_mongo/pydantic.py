@@ -4,7 +4,7 @@ from bson import ObjectId
 from pydantic_core import CoreSchema, core_schema
 
 
-def register_object_id_in_pydantic() -> None:
+def register_object_id_schema() -> None:
     def objectid_validator(v: object) -> ObjectId:
         if isinstance(v, ObjectId):
             return v
@@ -16,5 +16,5 @@ def register_object_id_in_pydantic() -> None:
     def _get_pydantic_core_schema(cls: type[ObjectId], _source: object, _handler: Callable[[object], CoreSchema]) -> CoreSchema:  # noqa: ARG001
         return core_schema.no_info_plain_validator_function(objectid_validator)
 
-    # ObjectId.__get_pydantic_core_schema__ = _get_pydantic_core_schema
-    setattr(ObjectId, "__get_pydantic_core_schema__", _get_pydantic_core_schema)  # noqa: B010
+    if getattr(ObjectId, "__get_pydantic_core_schema__", None) is None:
+        setattr(ObjectId, "__get_pydantic_core_schema__", _get_pydantic_core_schema)  # noqa: B010

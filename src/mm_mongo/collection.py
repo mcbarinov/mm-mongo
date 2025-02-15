@@ -4,7 +4,7 @@ from typing import Any
 from bson import CodecOptions
 from bson.codec_options import TypeRegistry
 from pymongo import ASCENDING, DESCENDING, IndexModel, ReturnDocument
-from pymongo.results import DeleteResult, InsertManyResult, UpdateResult
+from pymongo.results import DeleteResult, InsertManyResult, InsertOneResult, UpdateResult
 
 from mm_mongo.codecs import DecimalCodec
 from mm_mongo.model import MongoModel
@@ -18,7 +18,7 @@ class MongoNotFoundError(Exception):
 
 
 class MongoCollection[ID: PKType, T: MongoModel[Any]]:
-    def __init__(self, model_class: type[T], database: DatabaseAny) -> None:
+    def __init__(self, database: DatabaseAny, model_class: type[T]) -> None:
         if not model_class.__collection__:
             raise ValueError("empty collection name")
 
@@ -38,12 +38,8 @@ class MongoCollection[ID: PKType, T: MongoModel[Any]]:
             else:
                 database.create_collection(model_class.__collection__, codec_options=codecs, validator=model_class.__validator__)
 
-    def _to_model(self, doc: DocumentType) -> T:
-        doc["id"] = doc.pop("_id")  # type: ignore[index, attr-defined]
-        return self.model_class(**doc)
-
-    def insert_one(self, doc: T) -> ID:
-        return self.collection.insert_one(doc.to_doc()).inserted_id  # type: ignore[no-any-return]
+    def insert_one(self, doc: T) -> InsertOneResult:
+        return self.collection.insert_one(doc.to_doc())
 
     def insert_many(self, docs: list[T], ordered: bool = True) -> InsertManyResult:
         return self.collection.insert_many([obj.to_doc() for obj in docs], ordered=ordered)
@@ -76,13 +72,13 @@ class MongoCollection[ID: PKType, T: MongoModel[Any]]:
     def set_and_get(self, pk: ID, update: QueryType) -> T:
         return self.update_and_get(pk, {"$set": update})
 
-    def update_by_id(self, pk: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
+    def update(self, pk: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
         return self.collection.update_one({"_id": pk}, update, upsert=upsert)
 
-    def set_by_id(self, pk: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
+    def set(self, pk: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
         return self.collection.update_one({"_id": pk}, {"$set": update}, upsert=upsert)
 
-    def set_and_push_by_id(self, pk: ID, update: QueryType, push: QueryType) -> UpdateResult:
+    def set_and_push(self, pk: ID, update: QueryType, push: QueryType) -> UpdateResult:
         return self.collection.update_one({"_id": pk}, {"$set": update, "$push": push})
 
     def update_one(self, query: QueryType, update: QueryType, upsert: bool = False) -> UpdateResult:
@@ -100,7 +96,7 @@ class MongoCollection[ID: PKType, T: MongoModel[Any]]:
     def delete_one(self, query: QueryType) -> DeleteResult:
         return self.collection.delete_one(query)
 
-    def delete_by_id(self, pk: ID) -> DeleteResult:
+    def delete(self, pk: ID) -> DeleteResult:
         return self.collection.delete_one({"_id": pk})
 
     def count(self, query: QueryType) -> int:
@@ -111,6 +107,10 @@ class MongoCollection[ID: PKType, T: MongoModel[Any]]:
 
     def drop_collection(self) -> None:
         self.collection.drop()
+
+    def _to_model(self, doc: DocumentType) -> T:
+        doc["id"] = doc.pop("_id")  # type: ignore[index, attr-defined]
+        return self.model_class(**doc)
 
 
 def parse_sort(sort: SortType) -> list[tuple[str, int]] | None:
@@ -147,6 +147,10 @@ def parse_str_index_model(index: str) -> IndexModel:
     if unique:
         return IndexModel(keys, unique=True)
     return IndexModel(keys)
+
+
+def mongo_query(**kwargs: object) -> QueryType:
+    return {k: v for k, v in kwargs.items() if v or v == 0}
 
 
 def drop_collection(database: DatabaseAny, name: str) -> None:
