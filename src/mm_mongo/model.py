@@ -3,7 +3,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import ClassVar
 
-from pydantic import BaseModel
+from bson import ObjectId
+from pydantic import BaseModel, ConfigDict
 from pymongo import IndexModel
 
 from mm_mongo.types_ import PKType
@@ -16,7 +17,7 @@ class MongoNotFoundError(Exception):
 
 
 class MongoModel[ID: PKType](BaseModel):
-    model_config = {"arbitrary_types_allowed": True}
+    model_config = ConfigDict(json_encoders={ObjectId: str})
     id: ID
 
     __collection__: str
@@ -29,7 +30,3 @@ class MongoModel[ID: PKType](BaseModel):
             doc["_id"] = doc["id"]
         del doc["id"]
         return doc
-
-    # @classmethod
-    # def init_collection[T: MongoModel](cls: type[T], database: DatabaseAny) -> MongoCollection[T]:
-    #     return MongoCollection[T](cls, database)
