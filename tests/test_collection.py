@@ -526,3 +526,28 @@ def test_drop_collection(database):
     col.drop_collection()
     assert col.count({}) == 0
     assert Data.__collection__ not in database.list_collection_names()
+
+
+def test_nested_document(database):
+    class NestedData(MongoModel[ObjectId]):
+        __collection__: str = "test_nested_document__nested_data"
+        name: str
+
+    class Data(MongoModel[int]):
+        __collection__: str = "test_nested_document__data"
+        name: str
+        nested: NestedData
+
+    drop_collection(database, NestedData.__collection__)
+    drop_collection(database, Data.__collection__)
+    col: MongoCollection[int, Data] = MongoCollection(database, Data)
+    col.insert_one(Data(id=1, name="n1", nested=NestedData(id=ObjectId(), name="n1")))
+
+    # Test find nested document
+    doc = col.get(1)
+    assert doc.nested.name == "n1"
+
+    # Test update nested document
+    col.update(1, {"$set": {"nested.name": "n2"}})
+    doc = col.get(1)
+    assert doc.nested.name == "n2"
