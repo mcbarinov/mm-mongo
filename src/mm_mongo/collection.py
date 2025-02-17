@@ -39,10 +39,10 @@ class MongoCollection[ID: PKType, T: MongoModel[Any]]:
                 database.create_collection(model_class.__collection__, codec_options=codecs, validator=model_class.__validator__)
 
     def insert_one(self, doc: T) -> InsertOneResult:
-        return self.collection.insert_one(doc.to_doc())
+        return self.collection.insert_one(doc.model_dump())
 
     def insert_many(self, docs: list[T], ordered: bool = True) -> InsertManyResult:
-        return self.collection.insert_many([obj.to_doc() for obj in docs], ordered=ordered)
+        return self.collection.insert_many([obj.model_dump() for obj in docs], ordered=ordered)
 
     def get_or_none(self, pk: ID) -> T | None:
         res = self.collection.find_one({"_id": pk})
