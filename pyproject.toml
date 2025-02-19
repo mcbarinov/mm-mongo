@@ -1,6 +1,6 @@
 [project]
 name = "mm-mongo"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
@@ -58,6 +58,8 @@ ignore = [
     "COM812", # it's used in ruff formatter
     "T201"
 ]
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["id"]
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["field_validator"]
 [tool.ruff.lint.per-file-ignores]

@@ -8,16 +8,10 @@ from pydantic import BaseModel, ConfigDict, model_serializer, model_validator
 from pydantic_core.core_schema import SerializationInfo
 from pymongo import IndexModel
 
-from mm_mongo.types_ import PKType
+from mm_mongo.types_ import IdType
 
 
-class MongoNotFoundError(Exception):
-    def __init__(self, pk: PKType) -> None:
-        self.pk = pk
-        super().__init__(f"mongo document not found: {pk}")
-
-
-class MongoModel[ID: PKType](BaseModel):
+class MongoModel[ID: IdType](BaseModel):
     model_config = ConfigDict(json_encoders={ObjectId: str})
     id: ID
 

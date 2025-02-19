@@ -8,16 +8,16 @@ from pymongo.results import DeleteResult, InsertManyResult, InsertOneResult, Upd
 
 from mm_mongo.codecs import DecimalCodec
 from mm_mongo.model import MongoModel
-from mm_mongo.types_ import DatabaseAny, DocumentType, PKType, QueryType, SortType
+from mm_mongo.types_ import DatabaseAny, DocumentType, IdType, QueryType, SortType
 
 
 class MongoNotFoundError(Exception):
-    def __init__(self, pk: object) -> None:
-        self.pk = pk
-        super().__init__(f"mongo document not found: {pk}")
+    def __init__(self, id: object) -> None:
+        self.id = id
+        super().__init__(f"mongo document not found: {id}")
 
 
-class MongoCollection[ID: PKType, T: MongoModel[Any]]:
+class MongoCollection[ID: IdType, T: MongoModel[Any]]:
     def __init__(self, database: DatabaseAny, model_class: type[T]) -> None:
         if not model_class.__collection__:
             raise ValueError("empty collection name")
@@ -44,15 +44,15 @@ class MongoCollection[ID: PKType, T: MongoModel[Any]]:
     def insert_many(self, docs: list[T], ordered: bool = True) -> InsertManyResult:
         return self.collection.insert_many([obj.model_dump() for obj in docs], ordered=ordered)
 
-    def get_or_none(self, pk: ID) -> T | None:
-        res = self.collection.find_one({"_id": pk})
+    def get_or_none(self, id: ID) -> T | None:
+        res = self.collection.find_one({"_id": id})
         if res:
             return self._to_model(res)
 
-    def get(self, pk: ID) -> T:
-        res = self.get_or_none(pk)
+    def get(self, id: ID) -> T:
+        res = self.get_or_none(id)
         if not res:
-            raise MongoNotFoundError(pk)
+            raise MongoNotFoundError(id)
         return res
 
     def find(self, query: QueryType, sort: SortType = None, limit: int = 0) -> list[T]:
@@ -63,23 +63,23 @@ class MongoCollection[ID: PKType, T: MongoModel[Any]]:
         if res:
             return self._to_model(res)
 
-    def update_and_get(self, pk: ID, update: QueryType) -> T:
-        res = self.collection.find_one_and_update({"_id": pk}, update, return_document=ReturnDocument.AFTER)
+    def update_and_get(self, id: ID, update: QueryType) -> T:
+        res = self.collection.find_one_and_update({"_id": id}, update, return_document=ReturnDocument.AFTER)
         if res:
             return self._to_model(res)
-        raise MongoNotFoundError(pk)
+        raise MongoNotFoundError(id)
 
-    def set_and_get(self, pk: ID, update: QueryType) -> T:
-        return self.update_and_get(pk, {"$set": update})
+    def set_and_get(self, id: ID, update: QueryType) -> T:
+        return self.update_and_get(id, {"$set": update})
 
-    def update(self, pk: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
-        return self.collection.update_one({"_id": pk}, update, upsert=upsert)
+    def update(self, id: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
+        return self.collection.update_one({"_id": id}, update, upsert=upsert)
 
-    def set(self, pk: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
-        return self.collection.update_one({"_id": pk}, {"$set": update}, upsert=upsert)
+    def set(self, id: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
+        return self.collection.update_one({"_id": id}, {"$set": update}, upsert=upsert)
 
-    def set_and_push(self, pk: ID, update: QueryType, push: QueryType) -> UpdateResult:
-        return self.collection.update_one({"_id": pk}, {"$set": update, "$push": push})
+    def set_and_push(self, id: ID, update: QueryType, push: QueryType) -> UpdateResult:
+        return self.collection.update_one({"_id": id}, {"$set": update, "$push": push})
 
     def update_one(self, query: QueryType, update: QueryType, upsert: bool = False) -> UpdateResult:
         return self.collection.update_one(query, update, upsert=upsert)
@@ -96,8 +96,8 @@ class MongoCollection[ID: PKType, T: MongoModel[Any]]:
     def delete_one(self, query: QueryType) -> DeleteResult:
         return self.collection.delete_one(query)
 
-    def delete(self, pk: ID) -> DeleteResult:
-        return self.collection.delete_one({"_id": pk})
+    def delete(self, id: ID) -> DeleteResult:
+        return self.collection.delete_one({"_id": id})
 
     def count(self, query: QueryType) -> int:
         return self.collection.count_documents(query)
