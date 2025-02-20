@@ -22,9 +22,8 @@ class MongoModel[ID: IdType](BaseModel):
     @model_serializer(mode="wrap")
     def serialize_model(self, serializer: Callable[[object], dict[str, object]], _info: SerializationInfo) -> dict[str, object]:
         data = serializer(self)
-        if data.get("id") is not None:
-            data["_id"] = data["id"]
-            del data["id"]
+        data = {"_id": data["id"]} | data
+        del data["id"]
         return data
 
     @model_validator(mode="before")
