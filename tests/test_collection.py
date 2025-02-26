@@ -3,32 +3,10 @@ from typing import ClassVar
 
 import pytest
 from bson import ObjectId
-from pymongo import IndexModel
 from pymongo.errors import WriteError
 
 from mm_mongo import MongoCollection, MongoModel
-from mm_mongo.collection import MongoNotFoundError, drop_collection, mongo_query, parse_indexes, parse_str_index_model
-
-
-def test_parse_str_index_model():
-    assert IndexModel("k").document == parse_str_index_model("k").document
-    assert IndexModel("k", unique=True).document == parse_str_index_model("!k").document
-    assert IndexModel([("a", 1), ("b", -1)], unique=True).document == parse_str_index_model("!a,-b").document
-
-
-def test_parse_indexes():
-    assert parse_indexes(None) == []
-    assert parse_indexes("") == []
-    assert [i.document for i in parse_indexes("a")] == [IndexModel("a").document]
-    assert [i.document for i in parse_indexes("a, b")] == [IndexModel("a").document, IndexModel("b").document]
-    assert [i.document for i in parse_indexes("a,b")] == [IndexModel("a").document, IndexModel("b").document]
-    assert [i.document for i in parse_indexes("a,!b")] == [IndexModel("a").document, IndexModel("b", unique=True).document]
-    assert [i.document for i in parse_indexes("a, !b")] == [IndexModel("a").document, IndexModel("b", unique=True).document]
-
-
-def test_mongo_query():
-    assert mongo_query(a=1, b=None, c="") == {"a": 1}
-    assert mongo_query(a=0) == {"a": 0}
+from mm_mongo.collection import MongoNotFoundError
 
 
 def test_init_collection(database):
@@ -36,7 +14,7 @@ def test_init_collection(database):
         __collection__: str = "data__test_init_collection"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[str, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1"))
     col.insert_one(Data(id=2, name="n2"))
@@ -53,7 +31,7 @@ def test_schema_validation(database):
             "$jsonSchema": {"required": ["name", "value"], "properties": {"value": {"minimum": 10}}},
         }
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     time.sleep(2)  # without it `-n auto` doesn't work. It looks like drop_collection invokes a little bit later
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1", value=100))
@@ -66,7 +44,7 @@ def test_insert_one(database):
         __collection__: str = "data__test_insert_one"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     res = col.insert_one(Data(id=1, name="n1"))
     assert res.inserted_id == 1
@@ -79,7 +57,7 @@ def test_insert_many(database):
         __collection__: str = "data__test_insert_many"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [Data(id=1, name="n1"), Data(id=2, name="n2")]
     res = col.insert_many(docs)
@@ -94,7 +72,7 @@ def test_get_or_none(database):
         __collection__: str = "data__test_get_or_none"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1"))
 
@@ -107,7 +85,7 @@ def test_get(database):
         __collection__: str = "data__test_get"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1"))
 
@@ -122,7 +100,7 @@ def test_find(database):
         __collection__: str = "data__test_find"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [Data(id=1, name="n1"), Data(id=2, name="n2"), Data(id=3, name="n3")]
     col.insert_many(docs)
@@ -164,7 +142,7 @@ def test_find_one(database):
         __collection__: str = "data__test_find_one"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [Data(id=1, name="n1"), Data(id=2, name="n2"), Data(id=3, name="n3")]
     col.insert_many(docs)
@@ -194,7 +172,7 @@ def test_update_and_get(database):
         name: str
         value: int
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1", value=10))
 
@@ -213,7 +191,7 @@ def test_set_and_get(database):
         name: str
         value: int
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1", value=10))
 
@@ -232,7 +210,7 @@ def test_update(database):
         name: str
         value: int
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1", value=10))
 
@@ -262,7 +240,7 @@ def test_set(database):
         name: str
         value: int
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1", value=10))
 
@@ -293,7 +271,7 @@ def test_set_and_push(database):
         name: str
         values: list[int]
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1", values=[1, 2]))
 
@@ -317,7 +295,7 @@ def test_update_one(database):
         name: str
         value: int
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1", value=10))
 
@@ -348,7 +326,7 @@ def test_update_many(database):
         name: str
         value: int
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[ObjectId, Data] = MongoCollection(database, Data)
     id1, id2, id3 = ObjectId(), ObjectId(), ObjectId()
     docs = [
@@ -385,7 +363,7 @@ def test_set_many(database):
         name: str
         value: int
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [
         Data(id=1, name="n1", value=10),
@@ -412,7 +390,7 @@ def test_delete_many(database):
         __collection__: str = "data__test_delete_many"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [Data(id=1, name="n1"), Data(id=2, name="n2"), Data(id=3, name="n1")]
     col.insert_many(docs)
@@ -436,7 +414,7 @@ def test_delete_one(database):
         __collection__: str = "data__test_delete_one"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [Data(id=1, name="n1"), Data(id=2, name="n2"), Data(id=3, name="n1")]
     col.insert_many(docs)
@@ -458,7 +436,7 @@ def test_delete(database):
         __collection__: str = "data__test_delete"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [Data(id=1, name="n1"), Data(id=2, name="n2"), Data(id=3, name="n3")]
     col.insert_many(docs)
@@ -480,7 +458,7 @@ def test_count(database):
         __collection__: str = "data__test_count"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [Data(id=1, name="n1"), Data(id=2, name="n2"), Data(id=3, name="n1")]
     col.insert_many(docs)
@@ -499,7 +477,7 @@ def test_exists(database):
         __collection__: str = "data__test_exists"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     docs = [Data(id=1, name="n1"), Data(id=2, name="n2"), Data(id=3, name="n1")]
     col.insert_many(docs)
@@ -517,7 +495,7 @@ def test_drop_collection(database):
         __collection__: str = "data__test_drop_collection"
         name: str
 
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1"))
     assert col.count({}) == 1
@@ -538,8 +516,8 @@ def test_nested_document(database):
         name: str
         nested: NestedData
 
-    drop_collection(database, NestedData.__collection__)
-    drop_collection(database, Data.__collection__)
+    database.drop_collection(NestedData.__collection__)
+    database.drop_collection(Data.__collection__)
     col: MongoCollection[int, Data] = MongoCollection(database, Data)
     col.insert_one(Data(id=1, name="n1", nested=NestedData(id=ObjectId(), name="n1")))
 

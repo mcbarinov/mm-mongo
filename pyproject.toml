@@ -1,6 +1,6 @@
 [project]
 name = "mm-mongo"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
@@ -16,7 +16,7 @@ build-backend = "hatchling.build"
 dev-dependencies = [
     "pytest~=8.3.4",
     "pytest-xdist~=3.6.1",
-    "ruff~=0.9.6",
+    "ruff~=0.9.7",
     "pip-audit~=2.8.0",
     "bandit~=1.8.3",
     "mypy~=1.15.0",
@@ -33,7 +33,6 @@ line-length = 130
 target-version = "py313"
 [tool.ruff.lint]
 select = ["ALL"]
-fixable = ["F401"]
 ignore = [
     "TC", # flake8-type-checking, TYPE_CHECKING is dangerous, for example it doesn't work with pydantic
     "A005", # flake8-builtins: stdlib-module-shadowing
