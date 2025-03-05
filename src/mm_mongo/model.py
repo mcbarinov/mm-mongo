@@ -12,7 +12,7 @@ from mm_mongo.types_ import IdType
 
 
 class MongoModel[ID: IdType](BaseModel):
-    model_config = ConfigDict(json_encoders={ObjectId: str})
+    model_config = ConfigDict()
     id: ID
 
     __collection__: str
@@ -20,8 +20,11 @@ class MongoModel[ID: IdType](BaseModel):
     __indexes__: ClassVar[list[IndexModel | str] | str] = []
 
     @model_serializer(mode="wrap")
-    def serialize_model(self, serializer: Callable[[object], dict[str, object]], _info: SerializationInfo) -> dict[str, object]:
+    def serialize_model(self, serializer: Callable[[object], dict[str, object]], info: SerializationInfo) -> dict[str, object]:
         data = serializer(self)
+        # Handle ObjectId serialization here, for json mode only
+        if info.mode_is_json() and isinstance(data["id"], ObjectId):
+            data["id"] = str(data["id"])
         data = {"_id": data["id"]} | data
         del data["id"]
         return data
