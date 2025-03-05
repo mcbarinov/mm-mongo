@@ -1,10 +1,10 @@
 [project]
 name = "mm-mongo"
-version = "0.2.4"
+version = "0.3.0"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
-    "pymongo~=4.11.1",
+    "pymongo~=4.11.2",
     "mm-std>=0.3.3",
 ]
 
@@ -14,9 +14,9 @@ build-backend = "hatchling.build"
 
 [tool.uv]
 dev-dependencies = [
-    "pytest~=8.3.4",
+    "pytest~=8.3.5",
     "pytest-xdist~=3.6.1",
-    "ruff~=0.9.7",
+    "ruff~=0.9.9",
     "pip-audit~=2.8.0",
     "bandit~=1.8.3",
     "mypy~=1.15.0",

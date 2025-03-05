@@ -5,8 +5,7 @@ import pytest
 from bson import ObjectId
 from pymongo.errors import WriteError
 
-from mm_mongo import MongoCollection, MongoModel
-from mm_mongo.collection import MongoNotFoundError
+from mm_mongo import MongoCollection, MongoModel, MongoNotFoundError
 
 
 def test_init_collection(database):

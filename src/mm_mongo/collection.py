@@ -4,11 +4,20 @@ from typing import Any
 from bson import CodecOptions
 from bson.codec_options import TypeRegistry
 from pymongo import ReturnDocument
-from pymongo.results import DeleteResult, InsertManyResult, InsertOneResult, UpdateResult
 
 from mm_mongo.codecs import DecimalCodec
 from mm_mongo.model import MongoModel
-from mm_mongo.types_ import DatabaseAny, DocumentType, IdType, QueryType, SortType
+from mm_mongo.types_ import (
+    DatabaseAny,
+    DocumentType,
+    IdType,
+    MongoDeleteResult,
+    MongoInsertManyResult,
+    MongoInsertOneResult,
+    MongoUpdateResult,
+    QueryType,
+    SortType,
+)
 from mm_mongo.utils import parse_indexes, parse_sort
 
 
@@ -39,11 +48,13 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
             else:
                 database.create_collection(model_class.__collection__, codec_options=codecs, validator=model_class.__validator__)
 
-    def insert_one(self, doc: T) -> InsertOneResult:
-        return self.collection.insert_one(doc.model_dump())
+    def insert_one(self, doc: T) -> MongoInsertOneResult[ID]:
+        res = self.collection.insert_one(doc.model_dump())
+        return MongoInsertOneResult.from_result(res)
 
-    def insert_many(self, docs: list[T], ordered: bool = True) -> InsertManyResult:
-        return self.collection.insert_many([obj.model_dump() for obj in docs], ordered=ordered)
+    def insert_many(self, docs: list[T], ordered: bool = True) -> MongoInsertManyResult[ID]:
+        res = self.collection.insert_many([obj.model_dump() for obj in docs], ordered=ordered)
+        return MongoInsertManyResult.from_result(res)
 
     def get_or_none(self, id: ID) -> T | None:
         res = self.collection.find_one({"_id": id})
@@ -73,32 +84,41 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
     def set_and_get(self, id: ID, update: QueryType) -> T:
         return self.update_and_get(id, {"$set": update})
 
-    def update(self, id: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
-        return self.collection.update_one({"_id": id}, update, upsert=upsert)
+    def update(self, id: ID, update: QueryType, upsert: bool = False) -> MongoUpdateResult[ID]:
+        res = self.collection.update_one({"_id": id}, update, upsert=upsert)
+        return MongoUpdateResult.from_result(res)
 
-    def set(self, id: ID, update: QueryType, upsert: bool = False) -> UpdateResult:
-        return self.collection.update_one({"_id": id}, {"$set": update}, upsert=upsert)
+    def set(self, id: ID, update: QueryType, upsert: bool = False) -> MongoUpdateResult[ID]:
+        res = self.collection.update_one({"_id": id}, {"$set": update}, upsert=upsert)
+        return MongoUpdateResult.from_result(res)
 
-    def set_and_push(self, id: ID, update: QueryType, push: QueryType) -> UpdateResult:
-        return self.collection.update_one({"_id": id}, {"$set": update, "$push": push})
+    def set_and_push(self, id: ID, update: QueryType, push: QueryType) -> MongoUpdateResult[ID]:
+        res = self.collection.update_one({"_id": id}, {"$set": update, "$push": push})
+        return MongoUpdateResult.from_result(res)
 
-    def update_one(self, query: QueryType, update: QueryType, upsert: bool = False) -> UpdateResult:
-        return self.collection.update_one(query, update, upsert=upsert)
+    def update_one(self, query: QueryType, update: QueryType, upsert: bool = False) -> MongoUpdateResult[ID]:
+        res = self.collection.update_one(query, update, upsert=upsert)
+        return MongoUpdateResult.from_result(res)
 
-    def update_many(self, query: QueryType, update: QueryType, upsert: bool = False) -> UpdateResult:
-        return self.collection.update_many(query, update, upsert=upsert)
+    def update_many(self, query: QueryType, update: QueryType, upsert: bool = False) -> MongoUpdateResult[ID]:
+        res = self.collection.update_many(query, update, upsert=upsert)
+        return MongoUpdateResult.from_result(res)
 
-    def set_many(self, query: QueryType, update: QueryType) -> UpdateResult:
-        return self.collection.update_many(query, {"$set": update})
+    def set_many(self, query: QueryType, update: QueryType) -> MongoUpdateResult[ID]:
+        res = self.collection.update_many(query, {"$set": update})
+        return MongoUpdateResult.from_result(res)
 
-    def delete_many(self, query: QueryType) -> DeleteResult:
-        return self.collection.delete_many(query)
+    def delete_many(self, query: QueryType) -> MongoDeleteResult:
+        res = self.collection.delete_many(query)
+        return MongoDeleteResult.from_result(res)
 
-    def delete_one(self, query: QueryType) -> DeleteResult:
-        return self.collection.delete_one(query)
+    def delete_one(self, query: QueryType) -> MongoDeleteResult:
+        res = self.collection.delete_one(query)
+        return MongoDeleteResult.from_result(res)
 
-    def delete(self, id: ID) -> DeleteResult:
-        return self.collection.delete_one({"_id": id})
+    def delete(self, id: ID) -> MongoDeleteResult:
+        res = self.collection.delete_one({"_id": id})
+        return MongoDeleteResult.from_result(res)
 
     def count(self, query: QueryType) -> int:
         return self.collection.count_documents(query)
