@@ -4,7 +4,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from bson import ObjectId
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from pymongo.database import Database
 from pymongo.results import DeleteResult, InsertManyResult, InsertOneResult, UpdateResult
 
@@ -16,6 +16,7 @@ type DatabaseAny = Database[DocumentType]
 
 
 class MongoUpdateResult[ID: IdType](BaseModel):
+    model_config = ConfigDict(json_encoders={ObjectId: str})
     acknowledged: bool
     matched_count: int
     modified_count: int
@@ -32,6 +33,7 @@ class MongoUpdateResult[ID: IdType](BaseModel):
 
 
 class MongoInsertOneResult[ID: IdType](BaseModel):
+    model_config = ConfigDict(json_encoders={ObjectId: str})
     acknowledged: bool
     inserted_id: ID
 
@@ -41,6 +43,7 @@ class MongoInsertOneResult[ID: IdType](BaseModel):
 
 
 class MongoInsertManyResult[ID: IdType](BaseModel):
+    model_config = ConfigDict(json_encoders={ObjectId: str})
     acknowledged: bool
     inserted_ids: list[ID]
 
