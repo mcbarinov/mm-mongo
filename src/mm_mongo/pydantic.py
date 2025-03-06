@@ -17,6 +17,7 @@ def object_id_pydantic_core_schema(cls: type[ObjectId], _source: object, _handle
     return core_schema.json_or_python_schema(
         json_schema=core_schema.str_schema(),
         python_schema=core_schema.no_info_plain_validator_function(object_id_validator),
+        serialization=core_schema.to_string_ser_schema(),
     )
 
 

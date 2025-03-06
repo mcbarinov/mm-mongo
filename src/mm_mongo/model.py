@@ -3,8 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import ClassVar
 
-from bson import ObjectId
-from pydantic import BaseModel, ConfigDict, model_serializer, model_validator
+from pydantic import BaseModel, model_serializer, model_validator
 from pydantic_core.core_schema import SerializationInfo
 from pymongo import IndexModel
 
@@ -12,7 +11,6 @@ from mm_mongo.types_ import IdType
 
 
 class MongoModel[ID: IdType](BaseModel):
-    model_config = ConfigDict(json_encoders={ObjectId: str})
     id: ID
 
     __collection__: str
