@@ -360,7 +360,7 @@ wheels = [
 
 [[package]]
 name = "mm-mongo"
-version = "0.3.4"
+version = "0.3.5"
 source = { editable = "." }
 dependencies = [
     { name = "mm-std" },
@@ -379,7 +379,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mm-std", specifier = ">=0.3.4" },
+    { name = "mm-std", specifier = ">=0.3.5" },
     { name = "pymongo", specifier = "~=4.11.2" },
 ]
 
@@ -395,7 +395,7 @@ dev = [
 
 [[package]]
 name = "mm-std"
-version = "0.3.4"
+version = "0.3.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
@@ -403,11 +403,11 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydash" },
     { name = "python-dotenv" },
-    { name = "pyyaml" },
     { name = "rich" },
+    { name = "tomlkit" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d6/7e/d274b98b4614dfb5c5922d78aae8663ce920935350c57ba7476ddd5355b0/mm_std-0.3.4-py3-none-any.whl", hash = "sha256:cb0a7873c82fc8d6e725fb9e2f752f334793e06b227e40efd2f2290a631eb05c", size = 14802 },
+    { url = "https://files.pythonhosted.org/packages/95/70/fcd121caf06b3a7871c1dd40b2d330c732eb2dc92d93557b36761437d41e/mm_std-0.3.5-py3-none-any.whl", hash = "sha256:b56ba1a26649c3f9f81644114be9403cabdba45f29cdae870cda55ea4f9694b0", size = 15288 },
 ]
 
 [[package]]
@@ -877,6 +877,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c/toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f", size = 22253 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/44/6f/7120676b6d73228c96e17f1f794d8ab046fc910d781c8d151120c3f1569e/toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b", size = 16588 },
+]
+
+[[package]]
+name = "tomlkit"
+version = "0.13.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/09/a439bec5888f00a54b8b9f05fa94d7f901d6735ef4e55dcec9bc37b5d8fa/tomlkit-0.13.2.tar.gz", hash = "sha256:fff5fe59a87295b278abd31bec92c15d9bc4a06885ab12bcea52c71119392e79", size = 192885 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f9/b6/a447b5e4ec71e13871be01ba81f5dfc9d0af7e473da256ff46bc0e24026f/tomlkit-0.13.2-py3-none-any.whl", hash = "sha256:7a974427f6e119197f670fbbbeae7bef749a6c14e793db934baefc1b5f03efde", size = 37955 },
 ]
 
 [[package]]
