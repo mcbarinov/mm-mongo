@@ -1,11 +1,11 @@
 [project]
 name = "mm-mongo"
-version = "0.3.3"
+version = "0.3.4"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
     "pymongo~=4.11.2",
-    "mm-std>=0.3.3",
+    "mm-std>=0.3.4",
 ]
 
 [build-system]
