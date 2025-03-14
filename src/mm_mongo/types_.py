@@ -15,14 +15,14 @@ type DocumentType = Mapping[str, Any]
 type DatabaseAny = Database[DocumentType]
 
 
-class MongoUpdateResult[ID: IdType](BaseModel):
+class MongoUpdateResult(BaseModel):
     acknowledged: bool
     matched_count: int
     modified_count: int
-    upserted_id: ID | None
+    upserted_id: IdType | None
 
     @staticmethod
-    def from_result(result: UpdateResult) -> MongoUpdateResult[ID]:
+    def from_result(result: UpdateResult) -> MongoUpdateResult:
         return MongoUpdateResult(
             acknowledged=result.acknowledged,
             matched_count=result.matched_count,
@@ -31,21 +31,21 @@ class MongoUpdateResult[ID: IdType](BaseModel):
         )
 
 
-class MongoInsertOneResult[ID: IdType](BaseModel):
+class MongoInsertOneResult(BaseModel):
     acknowledged: bool
-    inserted_id: ID
+    inserted_id: IdType
 
     @staticmethod
-    def from_result(result: InsertOneResult) -> MongoInsertOneResult[ID]:
+    def from_result(result: InsertOneResult) -> MongoInsertOneResult:
         return MongoInsertOneResult(acknowledged=result.acknowledged, inserted_id=result.inserted_id)
 
 
-class MongoInsertManyResult[ID: IdType](BaseModel):
+class MongoInsertManyResult(BaseModel):
     acknowledged: bool
-    inserted_ids: list[ID]
+    inserted_ids: list[IdType]
 
     @staticmethod
-    def from_result(result: InsertManyResult) -> MongoInsertManyResult[ID]:
+    def from_result(result: InsertManyResult) -> MongoInsertManyResult:
         return MongoInsertManyResult(acknowledged=result.acknowledged, inserted_ids=result.inserted_ids)
 
 

@@ -48,11 +48,11 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
             else:
                 database.create_collection(model_class.__collection__, codec_options=codecs, validator=model_class.__validator__)
 
-    def insert_one(self, doc: T) -> MongoInsertOneResult[ID]:
+    def insert_one(self, doc: T) -> MongoInsertOneResult:
         res = self.collection.insert_one(doc.model_dump())
         return MongoInsertOneResult.from_result(res)
 
-    def insert_many(self, docs: list[T], ordered: bool = True) -> MongoInsertManyResult[ID]:
+    def insert_many(self, docs: list[T], ordered: bool = True) -> MongoInsertManyResult:
         res = self.collection.insert_many([obj.model_dump() for obj in docs], ordered=ordered)
         return MongoInsertManyResult.from_result(res)
 
@@ -84,27 +84,27 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
     def set_and_get(self, id: ID, update: QueryType) -> T:
         return self.update_and_get(id, {"$set": update})
 
-    def update(self, id: ID, update: QueryType, upsert: bool = False) -> MongoUpdateResult[ID]:
+    def update(self, id: ID, update: QueryType, upsert: bool = False) -> MongoUpdateResult:
         res = self.collection.update_one({"_id": id}, update, upsert=upsert)
         return MongoUpdateResult.from_result(res)
 
-    def set(self, id: ID, update: QueryType, upsert: bool = False) -> MongoUpdateResult[ID]:
+    def set(self, id: ID, update: QueryType, upsert: bool = False) -> MongoUpdateResult:
         res = self.collection.update_one({"_id": id}, {"$set": update}, upsert=upsert)
         return MongoUpdateResult.from_result(res)
 
-    def set_and_push(self, id: ID, update: QueryType, push: QueryType) -> MongoUpdateResult[ID]:
+    def set_and_push(self, id: ID, update: QueryType, push: QueryType) -> MongoUpdateResult:
         res = self.collection.update_one({"_id": id}, {"$set": update, "$push": push})
         return MongoUpdateResult.from_result(res)
 
-    def update_one(self, query: QueryType, update: QueryType, upsert: bool = False) -> MongoUpdateResult[ID]:
+    def update_one(self, query: QueryType, update: QueryType, upsert: bool = False) -> MongoUpdateResult:
         res = self.collection.update_one(query, update, upsert=upsert)
         return MongoUpdateResult.from_result(res)
 
-    def update_many(self, query: QueryType, update: QueryType, upsert: bool = False) -> MongoUpdateResult[ID]:
+    def update_many(self, query: QueryType, update: QueryType, upsert: bool = False) -> MongoUpdateResult:
         res = self.collection.update_many(query, update, upsert=upsert)
         return MongoUpdateResult.from_result(res)
 
-    def set_many(self, query: QueryType, update: QueryType) -> MongoUpdateResult[ID]:
+    def set_many(self, query: QueryType, update: QueryType) -> MongoUpdateResult:
         res = self.collection.update_many(query, {"$set": update})
         return MongoUpdateResult.from_result(res)
 
