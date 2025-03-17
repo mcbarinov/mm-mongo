@@ -20,6 +20,7 @@ dev-dependencies = [
     "pip-audit~=2.8.0",
     "bandit~=1.8.3",
     "mypy~=1.15.0",
+    "pytest-asyncio>=0.25.3",
 ]
 
 [tool.mypy]
@@ -70,3 +71,6 @@ indent-style = "space"
 [tool.bandit]
 exclude_dirs = ["tests"]
 skips = ["B311"]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
