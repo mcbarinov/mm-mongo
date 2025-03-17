@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 from collections import OrderedDict
 from typing import Any
 
 from pymongo import ReturnDocument
+from pymongo.synchronous.collection import Collection
 
 from mm_mongo.codecs import codec_options
 from mm_mongo.errors import MongoNotFoundError
@@ -21,15 +24,25 @@ from mm_mongo.utils import parse_indexes, parse_sort
 
 
 class MongoCollection[ID: IdType, T: MongoModel[Any]]:
-    def __init__(self, database: DatabaseAny, model_class: type[T]) -> None:
+    def __new__(cls, *_args: object, **_kwargs: object) -> MongoCollection[ID, T]:
+        raise TypeError("Use `MyClass.create()` instead of direct instantiation.")
+
+    def __init__(self, collection: Collection[DocumentType], model_class: type[T]) -> None:
+        self.collection = collection
+        self.model_class = model_class
+
+    @classmethod
+    def init(cls, database: DatabaseAny, model_class: type[T]) -> MongoCollection[ID, T]:
+        instance = super().__new__(cls)
+
         if not model_class.__collection__:
             raise ValueError("empty collection name")
 
-        self.collection = database.get_collection(model_class.__collection__, codec_options)
+        instance.collection = database.get_collection(model_class.__collection__, codec_options)
         if model_class.__indexes__:
-            self.collection.create_indexes(parse_indexes(model_class.__indexes__))
+            instance.collection.create_indexes(parse_indexes(model_class.__indexes__))
 
-        self.model_class = model_class
+        instance.model_class = model_class
         if model_class.__validator__:
             # if collection exists
             if model_class.__collection__ in database.list_collection_names():
@@ -41,6 +54,8 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
                 database.create_collection(
                     model_class.__collection__, codec_options=codec_options, validator=model_class.__validator__
                 )
+
+        return instance
 
     def insert_one(self, doc: T) -> MongoInsertOneResult:
         res = self.collection.insert_one(doc.model_dump())
