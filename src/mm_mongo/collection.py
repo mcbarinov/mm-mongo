@@ -1,11 +1,10 @@
 from collections import OrderedDict
 from typing import Any
 
-from bson import CodecOptions
-from bson.codec_options import TypeRegistry
 from pymongo import ReturnDocument
 
-from mm_mongo.codecs import DecimalCodec
+from mm_mongo.codecs import codec_options
+from mm_mongo.errors import MongoNotFoundError
 from mm_mongo.model import MongoModel
 from mm_mongo.types_ import (
     DatabaseAny,
@@ -21,19 +20,12 @@ from mm_mongo.types_ import (
 from mm_mongo.utils import parse_indexes, parse_sort
 
 
-class MongoNotFoundError(Exception):
-    def __init__(self, id: object) -> None:
-        self.id = id
-        super().__init__(f"mongo document not found: {id}")
-
-
 class MongoCollection[ID: IdType, T: MongoModel[Any]]:
     def __init__(self, database: DatabaseAny, model_class: type[T]) -> None:
         if not model_class.__collection__:
             raise ValueError("empty collection name")
 
-        codecs: Any = CodecOptions(type_registry=TypeRegistry([DecimalCodec()]), tz_aware=True)
-        self.collection = database.get_collection(model_class.__collection__, codecs)
+        self.collection = database.get_collection(model_class.__collection__, codec_options)
         if model_class.__indexes__:
             self.collection.create_indexes(parse_indexes(model_class.__indexes__))
 
@@ -46,7 +38,9 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
                 if "ok" not in res:
                     raise RuntimeError("can't set schema validator")
             else:
-                database.create_collection(model_class.__collection__, codec_options=codecs, validator=model_class.__validator__)
+                database.create_collection(
+                    model_class.__collection__, codec_options=codec_options, validator=model_class.__validator__
+                )
 
     def insert_one(self, doc: T) -> MongoInsertOneResult:
         res = self.collection.insert_one(doc.model_dump())

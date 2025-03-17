@@ -5,6 +5,7 @@ from typing import Any
 
 from bson import ObjectId
 from pydantic import BaseModel
+from pymongo.asynchronous.database import AsyncDatabase
 from pymongo.database import Database
 from pymongo.results import DeleteResult, InsertManyResult, InsertOneResult, UpdateResult
 
@@ -13,6 +14,7 @@ type QueryType = Mapping[str, object]
 type IdType = str | int | ObjectId
 type DocumentType = Mapping[str, Any]
 type DatabaseAny = Database[DocumentType]
+type AsyncDatabaseAny = AsyncDatabase[DocumentType]
 
 
 class MongoUpdateResult(BaseModel):
