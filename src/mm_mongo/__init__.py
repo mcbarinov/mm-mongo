@@ -12,6 +12,7 @@ from mm_mongo.errors import MongoNotFoundError as MongoNotFoundError
 from mm_mongo.json_ import CustomJSONEncoder as CustomJSONEncoder
 from mm_mongo.json_ import json_dumps as json_dumps
 from mm_mongo.model import MongoModel as MongoModel
+from mm_mongo.types_ import AsyncDatabaseAny as AsyncDatabaseAny
 from mm_mongo.types_ import DatabaseAny as DatabaseAny
 from mm_mongo.types_ import MongoDeleteResult as MongoDeleteResult
 from mm_mongo.types_ import MongoInsertManyResult as MongoInsertManyResult
