@@ -24,7 +24,7 @@ from mm_mongo.utils import parse_indexes, parse_sort
 
 class AsyncMongoCollection[ID: IdType, T: MongoModel[Any]]:
     def __new__(cls, *_args: object, **_kwargs: object) -> AsyncMongoCollection[ID, T]:
-        raise TypeError("Use `MyClass.create()` instead of direct instantiation.")
+        raise TypeError("Use `AsyncMongoCollection.init()` instead of direct instantiation.")
 
     def __init__(self, collection: AsyncCollection[DocumentType], model_class: type[T]) -> None:
         self.collection = collection
