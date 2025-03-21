@@ -327,7 +327,7 @@ wheels = [
 
 [[package]]
 name = "mm-mongo"
-version = "0.4.2"
+version = "0.4.3"
 source = { editable = "." }
 dependencies = [
     { name = "mm-std" },
@@ -347,7 +347,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mm-std", specifier = ">=0.3.10" },
+    { name = "mm-std", specifier = ">=0.3.12" },
     { name = "pymongo", specifier = "~=4.11.3" },
 ]
 
@@ -364,7 +364,7 @@ dev = [
 
 [[package]]
 name = "mm-std"
-version = "0.3.10"
+version = "0.3.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -379,7 +379,7 @@ dependencies = [
     { name = "tomlkit" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a4/e1/fbdab5f06d93403750d136cdb7e8dc6a375459424361d45b4010b39f1935/mm_std-0.3.10-py3-none-any.whl", hash = "sha256:390abf20489af8fbab2b6b16bf5594ea5c6a9ec75f4a4c2751bfcb01470f1381", size = 17268 },
+    { url = "https://files.pythonhosted.org/packages/c3/f9/7ac67de98f69814fae78d759615e54a7155d3d342b89db15fe3b95df2aa8/mm_std-0.3.12-py3-none-any.whl", hash = "sha256:2be6eafc8a8946e9d776acd590f7217d95cf786a9531d98e75459454a1f25e87", size = 17430 },
 ]
 
 [[package]]
