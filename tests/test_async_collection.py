@@ -8,7 +8,7 @@ from pymongo.errors import WriteError
 from mm_mongo import AsyncMongoCollection, MongoModel, MongoNotFoundError
 from mm_mongo.types_ import AsyncDatabaseAny
 
-pytestmark = pytest.mark.asyncio
+pytestmark = pytest.mark.anyio
 
 
 async def test_init_collection(async_database: AsyncDatabaseAny) -> None:
@@ -41,7 +41,6 @@ async def test_schema_validation(async_database: AsyncDatabaseAny) -> None:
         await col.update_one({"name": "n1"}, {"$set": {"value": 3}})
 
 
-@pytest.mark.asyncio
 async def test_insert_one(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_insert_one"
@@ -55,7 +54,6 @@ async def test_insert_one(async_database: AsyncDatabaseAny) -> None:
     assert (await col.get(1)).name == "n1"
 
 
-@pytest.mark.asyncio
 async def test_insert_many(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_insert_many"
@@ -71,7 +69,6 @@ async def test_insert_many(async_database: AsyncDatabaseAny) -> None:
     assert (await col.get(2)).name == "n2"
 
 
-@pytest.mark.asyncio
 async def test_get_or_none(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_get_or_none"
@@ -87,7 +84,6 @@ async def test_get_or_none(async_database: AsyncDatabaseAny) -> None:
     assert await col.get_or_none(2) is None
 
 
-@pytest.mark.asyncio
 async def test_get(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_get"
@@ -103,7 +99,6 @@ async def test_get(async_database: AsyncDatabaseAny) -> None:
         await col.get(2)
 
 
-@pytest.mark.asyncio
 async def test_find(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_find"
@@ -146,7 +141,6 @@ async def test_find(async_database: AsyncDatabaseAny) -> None:
     assert results[1].name == "n2"
 
 
-@pytest.mark.asyncio
 async def test_find_one(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_find_one"
@@ -176,7 +170,6 @@ async def test_find_one(async_database: AsyncDatabaseAny) -> None:
     assert result is None
 
 
-@pytest.mark.asyncio
 async def test_update_and_get(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_update_and_get"
@@ -196,7 +189,6 @@ async def test_update_and_get(async_database: AsyncDatabaseAny) -> None:
         await col.update_and_get(2, {"$set": {"value": 30}})
 
 
-@pytest.mark.asyncio
 async def test_set_and_get(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_set_and_get"
@@ -216,7 +208,6 @@ async def test_set_and_get(async_database: AsyncDatabaseAny) -> None:
         await col.set_and_get(2, {"value": 30})
 
 
-@pytest.mark.asyncio
 async def test_update(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_update"
@@ -247,7 +238,6 @@ async def test_update(async_database: AsyncDatabaseAny) -> None:
     assert upserted_doc.value == 30
 
 
-@pytest.mark.asyncio
 async def test_set(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_set"
@@ -279,7 +269,6 @@ async def test_set(async_database: AsyncDatabaseAny) -> None:
     assert upserted_doc.name == "n2"
 
 
-@pytest.mark.asyncio
 async def test_set_and_push(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_set_and_push"
@@ -304,7 +293,6 @@ async def test_set_and_push(async_database: AsyncDatabaseAny) -> None:
     assert update_result.modified_count == 0
 
 
-@pytest.mark.asyncio
 async def test_update_one(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_update_one"
@@ -336,7 +324,6 @@ async def test_update_one(async_database: AsyncDatabaseAny) -> None:
     assert upserted_doc.name == "n2"
 
 
-@pytest.mark.asyncio
 async def test_update_many(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[ObjectId]):
         __collection__: str = "data__test_update_many"
@@ -377,7 +364,6 @@ async def test_update_many(async_database: AsyncDatabaseAny) -> None:
     assert upserted_doc.name == "n3"
 
 
-@pytest.mark.asyncio
 async def test_set_many(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_set_many"
@@ -406,7 +392,6 @@ async def test_set_many(async_database: AsyncDatabaseAny) -> None:
     assert update_result.modified_count == 0
 
 
-@pytest.mark.asyncio
 async def test_delete_many(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_delete_many"
@@ -431,7 +416,6 @@ async def test_delete_many(async_database: AsyncDatabaseAny) -> None:
     assert await col.count({}) == 1
 
 
-@pytest.mark.asyncio
 async def test_delete_one(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_delete_one"
@@ -454,7 +438,6 @@ async def test_delete_one(async_database: AsyncDatabaseAny) -> None:
     assert await col.count({}) == 2
 
 
-@pytest.mark.asyncio
 async def test_delete(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_delete"
@@ -477,7 +460,6 @@ async def test_delete(async_database: AsyncDatabaseAny) -> None:
     assert await col.count({}) == 2
 
 
-@pytest.mark.asyncio
 async def test_count(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_count"
@@ -497,7 +479,6 @@ async def test_count(async_database: AsyncDatabaseAny) -> None:
     assert await col.count({"name": "n3"}) == 0
 
 
-@pytest.mark.asyncio
 async def test_exists(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_exists"
@@ -516,7 +497,6 @@ async def test_exists(async_database: AsyncDatabaseAny) -> None:
     assert await col.exists({"name": "n3"}) is False
 
 
-@pytest.mark.asyncio
 async def test_drop_collection(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
         __collection__: str = "data__test_drop_collection"
@@ -533,7 +513,6 @@ async def test_drop_collection(async_database: AsyncDatabaseAny) -> None:
     assert Data.__collection__ not in await async_database.list_collection_names()
 
 
-@pytest.mark.asyncio
 async def test_nested_document(async_database: AsyncDatabaseAny) -> None:
     class NestedData(MongoModel[ObjectId]):
         __collection__: str = "nested__test_nested_document"

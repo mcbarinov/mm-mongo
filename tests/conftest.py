@@ -2,10 +2,16 @@ import random
 import string
 
 import pytest
-import pytest_asyncio
 from pymongo import WriteConcern
 
 from mm_mongo import AsyncMongoConnection, MongoConnection
+
+pytestmark = pytest.mark.anyio
+
+
+@pytest.fixture
+def anyio_backend():
+    return "asyncio"
 
 
 @pytest.fixture
@@ -17,7 +23,7 @@ def database():
     conn.client.drop_database(conn.database.name)
 
 
-@pytest_asyncio.fixture
+@pytest.fixture(scope="function")
 async def async_database():
     rnd_suffix = "".join(random.choices(string.ascii_letters + string.digits, k=32))
     url = f"mongodb://localhost/mm-mongo__test_{rnd_suffix}"
