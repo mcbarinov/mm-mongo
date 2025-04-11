@@ -23,7 +23,7 @@ def database():
     conn.client.drop_database(conn.database.name)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 async def async_database():
     rnd_suffix = "".join(random.choices(string.ascii_letters + string.digits, k=32))
     url = f"mongodb://localhost/mm-mongo__test_{rnd_suffix}"
