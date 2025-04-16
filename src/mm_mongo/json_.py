@@ -7,7 +7,7 @@ from json import JSONEncoder
 from typing import Any
 
 from bson import ObjectId
-from mm_std import Err, Ok
+from mm_std import Result
 from pydantic import BaseModel
 from pymongo.results import DeleteResult, InsertManyResult, InsertOneResult, UpdateResult
 
@@ -16,10 +16,8 @@ from .model import MongoModel
 
 class CustomJSONEncoder(JSONEncoder):
     def default(self, o: Any) -> Any:  # noqa: ANN401
-        if isinstance(o, Ok):
-            return {"ok": o.ok}
-        if isinstance(o, Err):
-            return {"err": o.err}
+        if isinstance(o, Result):
+            return o.to_dict()
         if isinstance(o, MongoModel):
             return o.model_dump()
         if isinstance(o, DeleteResult | UpdateResult):
