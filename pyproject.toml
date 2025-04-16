@@ -1,11 +1,11 @@
 [project]
 name = "mm-mongo"
-version = "0.4.5"
+version = "0.4.6"
 description = ""
 requires-python = ">=3.12"
 dependencies = [
     "pymongo~=4.12.0",
-    "mm-std>=0.3.22",
+    "mm-std>=0.3.30",
 ]
 
 [build-system]
@@ -16,7 +16,7 @@ build-backend = "hatchling.build"
 dev-dependencies = [
     "pytest~=8.3.5",
     "pytest-xdist~=3.6.1",
-    "ruff~=0.11.4",
+    "ruff~=0.11.5",
     "pip-audit~=2.9.0",
     "bandit~=1.8.3",
     "mypy~=1.15.0",
@@ -72,4 +72,4 @@ exclude_dirs = ["tests"]
 skips = ["B311"]
 
 [tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
+
