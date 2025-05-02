@@ -8,8 +8,6 @@ from pymongo.errors import WriteError
 from mm_mongo import AsyncMongoCollection, MongoModel, MongoNotFoundError
 from mm_mongo.types_ import AsyncDatabaseAny
 
-pytestmark = pytest.mark.anyio
-
 
 async def test_init_collection(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):

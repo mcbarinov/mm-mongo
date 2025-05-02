@@ -6,13 +6,6 @@ from pymongo import WriteConcern
 
 from mm_mongo import AsyncMongoConnection, MongoConnection
 
-pytestmark = pytest.mark.anyio
-
-
-@pytest.fixture
-def anyio_backend():
-    return "asyncio"
-
 
 @pytest.fixture
 def database():
@@ -30,3 +23,4 @@ async def async_database():
     conn = AsyncMongoConnection(url, write_concern=WriteConcern(w=1))
     yield conn.database
     await conn.client.drop_database(conn.database.name)
+    await conn.client.close()
