@@ -30,3 +30,9 @@ publish: build lint audit test
 
 sync:
     uv sync
+
+pre-commit:
+    uv run pre-commit run --all-files
+
+pre-commit-autoupdate:
+    uv run pre-commit autoupdate
