@@ -561,3 +561,64 @@ def test_push(database):
     push_result = col.push(2, {"items": "item1"})
     assert push_result.matched_count == 0
     assert push_result.modified_count == 0
+
+
+def test_pull(database):
+    class Data(MongoModel[int]):
+        __collection__: str = "data__test_pull"
+        name: str
+        items: list[str]
+
+    database.drop_collection(Data.__collection__)
+    col: MongoCollection[int, Data] = MongoCollection.init(database, Data)
+
+    # Insert initial document with items
+    col.insert_one(Data(id=1, name="test", items=["item1", "item2", "item3"]))
+
+    # Test pull single item
+    pull_result = col.pull(1, {"items": "item2"})
+    assert pull_result.matched_count == 1
+    assert pull_result.modified_count == 1
+
+    doc = col.get(1)
+    assert doc.items == ["item1", "item3"]
+
+    # Test pull non-existing item
+    pull_result = col.pull(1, {"items": "item4"})
+    assert pull_result.matched_count == 1
+    assert pull_result.modified_count == 0
+
+    doc = col.get(1)
+    assert doc.items == ["item1", "item3"]
+
+    # Test pull with non-existing document
+    pull_result = col.pull(2, {"items": "item1"})
+    assert pull_result.matched_count == 0
+    assert pull_result.modified_count == 0
+
+
+def test_set_and_pull(database):
+    class Data(MongoModel[int]):
+        __collection__: str = "data__test_set_and_pull"
+        name: str
+        items: list[str]
+
+    database.drop_collection(Data.__collection__)
+    col: MongoCollection[int, Data] = MongoCollection.init(database, Data)
+
+    # Insert initial document with items
+    col.insert_one(Data(id=1, name="old_name", items=["item1", "item2", "item3"]))
+
+    # Test set and pull
+    update_result = col.set_and_pull(1, {"name": "new_name"}, {"items": "item2"})
+    assert update_result.matched_count == 1
+    assert update_result.modified_count == 1
+
+    doc = col.get(1)
+    assert doc.name == "new_name"
+    assert doc.items == ["item1", "item3"]
+
+    # Test set and pull with non-existing document
+    update_result = col.set_and_pull(2, {"name": "new_name"}, {"items": "item1"})
+    assert update_result.matched_count == 0
+    assert update_result.modified_count == 0

@@ -105,6 +105,14 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
         res = self.collection.update_one({"_id": id}, {"$push": push})
         return MongoUpdateResult.from_result(res)
 
+    def pull(self, id: ID, pull: QueryType) -> MongoUpdateResult:
+        res = self.collection.update_one({"_id": id}, {"$pull": pull})
+        return MongoUpdateResult.from_result(res)
+
+    def set_and_pull(self, id: ID, update: QueryType, pull: QueryType) -> MongoUpdateResult:
+        res = self.collection.update_one({"_id": id}, {"$set": update, "$pull": pull})
+        return MongoUpdateResult.from_result(res)
+
     def set_and_push(self, id: ID, update: QueryType, push: QueryType) -> MongoUpdateResult:
         res = self.collection.update_one({"_id": id}, {"$set": update, "$push": push})
         return MongoUpdateResult.from_result(res)
