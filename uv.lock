@@ -402,7 +402,7 @@ wheels = [
 
 [[package]]
 name = "mm-mongo"
-version = "0.5.2"
+version = "0.5.3"
 source = { editable = "." }
 dependencies = [
     { name = "mm-std" },
@@ -432,7 +432,7 @@ dev = [
     { name = "mypy", specifier = "~=1.15.0" },
     { name = "pip-audit", specifier = "~=2.9.0" },
     { name = "pytest", specifier = "~=8.3.5" },
-    { name = "pytest-asyncio", specifier = ">=0.26.0" },
+    { name = "pytest-asyncio", specifier = "~=0.26.0" },
     { name = "pytest-xdist", specifier = "~=3.6.1" },
     { name = "ruff", specifier = "~=0.11.8" },
 ]

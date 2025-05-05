@@ -528,3 +528,36 @@ def test_nested_document(database):
     col.update(1, {"$set": {"nested.name": "n2"}})
     doc = col.get(1)
     assert doc.nested.name == "n2"
+
+
+def test_push(database):
+    class Data(MongoModel[int]):
+        __collection__: str = "data__test_push"
+        name: str
+        items: list[str]
+
+    database.drop_collection(Data.__collection__)
+    col: MongoCollection[int, Data] = MongoCollection.init(database, Data)
+
+    # Insert initial document
+    col.insert_one(Data(id=1, name="test", items=[]))
+
+    # Test push single item
+    push_result = col.push(1, {"items": "item1"})
+    assert push_result.matched_count == 1
+    assert push_result.modified_count == 1
+
+    doc = col.get(1)
+    assert doc.items == ["item1"]
+
+    # Test push multiple items
+    col.push(1, {"items": "item2"})
+    col.push(1, {"items": "item3"})
+
+    doc = col.get(1)
+    assert doc.items == ["item1", "item2", "item3"]
+
+    # Test push with non-existing document
+    push_result = col.push(2, {"items": "item1"})
+    assert push_result.matched_count == 0
+    assert push_result.modified_count == 0

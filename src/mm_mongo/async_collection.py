@@ -99,6 +99,10 @@ class AsyncMongoCollection[ID: IdType, T: MongoModel[Any]]:
         res = await self.collection.update_one({"_id": id}, {"$set": update}, upsert=upsert)
         return MongoUpdateResult.from_result(res)
 
+    async def push(self, id: ID, push: QueryType) -> MongoUpdateResult:
+        res = await self.collection.update_one({"_id": id}, {"$push": push})
+        return MongoUpdateResult.from_result(res)
+
     async def set_and_push(self, id: ID, update: QueryType, push: QueryType) -> MongoUpdateResult:
         res = await self.collection.update_one({"_id": id}, {"$set": update, "$push": push})
         return MongoUpdateResult.from_result(res)

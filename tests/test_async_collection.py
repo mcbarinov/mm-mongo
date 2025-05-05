@@ -534,3 +534,36 @@ async def test_nested_document(async_database: AsyncDatabaseAny) -> None:
     await col.update(1, {"$set": {"nested.name": "n2"}})
     doc = await col.get(1)
     assert doc.nested.name == "n2"
+
+
+async def test_push(async_database: AsyncDatabaseAny) -> None:
+    class Data(MongoModel[int]):
+        __collection__: str = "data__test_push"
+        name: str
+        items: list[str]
+
+    await async_database.drop_collection(Data.__collection__)
+    col: AsyncMongoCollection[int, Data] = await AsyncMongoCollection.init(async_database, Data)
+
+    # Insert initial document
+    await col.insert_one(Data(id=1, name="test", items=[]))
+
+    # Test push single item
+    push_result = await col.push(1, {"items": "item1"})
+    assert push_result.matched_count == 1
+    assert push_result.modified_count == 1
+
+    doc = await col.get(1)
+    assert doc.items == ["item1"]
+
+    # Test push multiple items
+    await col.push(1, {"items": "item2"})
+    await col.push(1, {"items": "item3"})
+
+    doc = await col.get(1)
+    assert doc.items == ["item1", "item2", "item3"]
+
+    # Test push with non-existing document
+    push_result = await col.push(2, {"items": "item1"})
+    assert push_result.matched_count == 0
+    assert push_result.modified_count == 0
