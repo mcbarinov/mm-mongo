@@ -1,6 +1,6 @@
 from pymongo import ASCENDING, DESCENDING, IndexModel
 
-from mm_mongo.types_ import QueryType, SortType
+from mm_mongo.types_ import SortType
 
 
 def parse_sort(sort: SortType) -> list[tuple[str, int]] | None:
@@ -42,7 +42,3 @@ def parse_str_index_model(index: str) -> IndexModel:
     if unique:
         return IndexModel(keys, unique=True)
     return IndexModel(keys)
-
-
-def mongo_query(**kwargs: object) -> QueryType:
-    return {k: v for k, v in kwargs.items() if v or v == 0}

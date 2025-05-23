@@ -1,6 +1,5 @@
 from pymongo import IndexModel
 
-from mm_mongo import mongo_query
 from mm_mongo.utils import parse_indexes, parse_sort, parse_str_index_model
 
 
@@ -18,11 +17,6 @@ def test_parse_indexes():
     assert [i.document for i in parse_indexes("a,b")] == [IndexModel("a").document, IndexModel("b").document]
     assert [i.document for i in parse_indexes("a,!b")] == [IndexModel("a").document, IndexModel("b", unique=True).document]
     assert [i.document for i in parse_indexes("a, !b")] == [IndexModel("a").document, IndexModel("b", unique=True).document]
-
-
-def test_mongo_query():
-    assert mongo_query(a=1, b=None, c="") == {"a": 1}
-    assert mongo_query(a=0) == {"a": 0}
 
 
 def test_parse_sort():
