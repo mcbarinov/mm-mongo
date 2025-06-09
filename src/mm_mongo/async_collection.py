@@ -37,7 +37,7 @@ class AsyncMongoCollection[ID: IdType, T: MongoModel[Any]]:
 
     def __init__(self, collection: AsyncCollection[DocumentType], model_class: type[T]) -> None:
         self.collection = collection
-        self.model_class = model_class
+        self.model_class: type[T] = model_class
 
     @classmethod
     async def init(cls, database: AsyncDatabaseAny, model_class: type[T]) -> AsyncMongoCollection[ID, T]:
@@ -89,6 +89,7 @@ class AsyncMongoCollection[ID: IdType, T: MongoModel[Any]]:
         res = await self.collection.find_one({"_id": id})
         if res:
             return self._to_model(res)
+        return None
 
     async def get(self, id: ID) -> T:
         """Get document by ID, raise MongoNotFoundError if not found."""
