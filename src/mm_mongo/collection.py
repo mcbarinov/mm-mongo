@@ -11,7 +11,7 @@ from pymongo.synchronous.collection import Collection
 from mm_mongo.codecs import codec_options
 from mm_mongo.errors import MongoNotFoundError
 from mm_mongo.model import MongoModel
-from mm_mongo.types_ import (
+from mm_mongo.types import (
     DatabaseAny,
     DocumentType,
     IdType,

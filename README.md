@@ -94,4 +94,6 @@ class Product(MongoModel[str]):
 - `"field"` - ascending index
 - `"-field"` - descending index
 - `"!field"` - unique ascending index
-- `"field1,-field2"` - compound index (field1 asc, field2 desc)
+- `"field1:-field2"` - compound index (field1 asc, field2 desc)
+- `"!field1:-field2:field3"` - unique compound index
+- `"field1, !field2:-field3, -field4"` - multiple indexes

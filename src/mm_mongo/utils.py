@@ -1,6 +1,6 @@
 from pymongo import ASCENDING, DESCENDING, IndexModel
 
-from mm_mongo.types_ import SortType
+from mm_mongo.types import SortType
 
 
 def parse_sort(sort: SortType) -> list[tuple[str, int]] | None:
@@ -17,6 +17,19 @@ def parse_sort(sort: SortType) -> list[tuple[str, int]] | None:
 
 
 def parse_indexes(value: list[IndexModel | str] | str | None) -> list[IndexModel]:
+    """Parse index definitions from various formats.
+
+    Supports:
+    - Single field: "field" (ascending), "-field" (descending), "!field" (unique)
+    - Compound index: "!field1:-field2:field3" (unique compound index)
+    - Multiple indexes: "field1, !field2:-field3, -field4"
+
+    Args:
+        value: Index definitions as string, list, or None
+
+    Returns:
+        List of IndexModel objects
+    """
     if value is None:
         return []
     if isinstance(value, str):
@@ -30,9 +43,9 @@ def parse_indexes(value: list[IndexModel | str] | str | None) -> list[IndexModel
 def parse_str_index_model(index: str) -> IndexModel:
     unique = index.startswith("!")
     index = index.removeprefix("!")
-    if "," in index:
+    if ":" in index:
         keys = []
-        for i in index.split(","):
+        for i in index.split(":"):
             order = DESCENDING if i.startswith("-") else ASCENDING
             keys.append((i.removeprefix("-"), order))
     else:

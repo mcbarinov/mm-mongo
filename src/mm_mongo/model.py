@@ -9,7 +9,7 @@ from pydantic import BaseModel, model_serializer, model_validator
 from pydantic_core.core_schema import SerializationInfo
 from pymongo import IndexModel
 
-from mm_mongo.types_ import IdType
+from mm_mongo.types import IdType
 
 
 class MongoModel[ID: IdType](BaseModel):

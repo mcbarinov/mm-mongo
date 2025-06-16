@@ -6,7 +6,7 @@ from bson import ObjectId
 from pymongo.errors import WriteError
 
 from mm_mongo import AsyncMongoCollection, MongoModel, MongoNotFoundError
-from mm_mongo.types_ import AsyncDatabaseAny
+from mm_mongo.types import AsyncDatabaseAny
 
 
 async def test_init_collection(async_database: AsyncDatabaseAny) -> None:

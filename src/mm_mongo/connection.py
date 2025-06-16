@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from pymongo import AsyncMongoClient, MongoClient, WriteConcern
 
-from mm_mongo.types_ import DocumentType
+from mm_mongo.types import DocumentType
 
 
 class MongoConnection:
