@@ -28,13 +28,14 @@ class MongoModel[ID: IdType](BaseModel):
     __validator__: ClassVar[dict[str, object] | None] = None
     """Optional MongoDB schema validator using JSON Schema format."""
 
-    __indexes__: ClassVar[list[IndexModel | str] | str] = []
+    __indexes__: ClassVar[list[IndexModel | str]] = []
     """
     Optional indexes to create on the collection.
 
     Formats:
-    - String: "field" (ascending), "-field" (descending), "!field" (unique)
-    - List: ["field1", "!field2", "-field3"]
+    - Single field: "field" (ascending), "-field" (descending), "!field" (unique)
+    - Compound index: "!field1:-field2:field3" (unique compound with colon separators)
+    - List: ["field1", "!field2:-field3", "-field4"]
     - IndexModel objects for complex indexes
     """
 

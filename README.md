@@ -73,7 +73,8 @@ class Product(MongoModel[str]):
 
     # Index formats:
     # "field" - ascending, "-field" - descending, "!field" - unique
-    __indexes__ = ["name", "!sku", "-created_at", "category,-price"]
+    # "!field1:-field2:field3" - compound index with colon separators
+    __indexes__ = ["name", "!sku", "-created_at", "!category:-price:name"]
 
     # MongoDB schema validation
     __validator__ = {
@@ -94,6 +95,9 @@ class Product(MongoModel[str]):
 - `"field"` - ascending index
 - `"-field"` - descending index
 - `"!field"` - unique ascending index
-- `"field1:-field2"` - compound index (field1 asc, field2 desc)
-- `"!field1:-field2:field3"` - unique compound index
-- `"field1, !field2:-field3, -field4"` - multiple indexes
+- `"!field1:-field2:field3"` - unique compound index (colon separators only)
+
+Example:
+```python
+__indexes__ = ["name", "!sku", "-created_at", "!category:-price:name"]
+```

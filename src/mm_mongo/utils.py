@@ -16,31 +16,33 @@ def parse_sort(sort: SortType) -> list[tuple[str, int]] | None:
     return sort
 
 
-def parse_indexes(value: list[IndexModel | str] | str | None) -> list[IndexModel]:
-    """Parse index definitions from various formats.
+def parse_indexes(value: list[IndexModel | str]) -> list[IndexModel]:
+    """Parse index definitions from a list.
 
     Supports:
     - Single field: "field" (ascending), "-field" (descending), "!field" (unique)
-    - Compound index: "!field1:-field2:field3" (unique compound index)
-    - Multiple indexes: "field1, !field2:-field3, -field4"
+    - Compound index: "!field1:-field2:field3" (unique compound with colon separators)
 
     Args:
-        value: Index definitions as string, list, or None
+        value: List of IndexModel objects or string index definitions
 
     Returns:
         List of IndexModel objects
+
+    Raises:
+        ValueError: If string index contains invalid characters (commas or spaces)
     """
-    if value is None:
-        return []
-    if isinstance(value, str):
-        value = value.strip()
-        if value == "":
-            return []
-        return [parse_str_index_model(index.strip()) for index in value.split(",")]
     return [parse_str_index_model(index) if isinstance(index, str) else index for index in value]
 
 
 def parse_str_index_model(index: str) -> IndexModel:
+    # Validate format - no commas or spaces allowed
+    if "," in index:
+        msg = f"Index string '{index}' contains comma. Use list format: ['field1', 'field2'] instead of 'field1,field2'"
+        raise ValueError(msg)
+    if " " in index:
+        raise ValueError(f"Index string '{index}' contains spaces. Remove spaces from index definition")
+
     unique = index.startswith("!")
     index = index.removeprefix("!")
     if ":" in index:
