@@ -10,7 +10,7 @@ from mm_mongo import MongoCollection, MongoModel, MongoNotFoundError
 
 def test_init_collection(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_init_collection"
+        __collection__ = "data__test_init_collection"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -25,8 +25,8 @@ def test_schema_validation(database):
         name: str
         value: int
 
-        __collection__: str = "data__test_schema_validation"
-        __validator__: ClassVar[dict[str, object]] = {
+        __collection__ = "data__test_schema_validation"
+        __validator__: ClassVar = {
             "$jsonSchema": {"required": ["name", "value"], "properties": {"value": {"minimum": 10}}},
         }
 
@@ -40,7 +40,7 @@ def test_schema_validation(database):
 
 def test_insert_one(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_insert_one"
+        __collection__ = "data__test_insert_one"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -53,7 +53,7 @@ def test_insert_one(database):
 
 def test_insert_many(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_insert_many"
+        __collection__ = "data__test_insert_many"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -68,7 +68,7 @@ def test_insert_many(database):
 
 def test_get_or_none(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_get_or_none"
+        __collection__ = "data__test_get_or_none"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -81,7 +81,7 @@ def test_get_or_none(database):
 
 def test_get(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_get"
+        __collection__ = "data__test_get"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -96,7 +96,7 @@ def test_get(database):
 
 def test_find(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_find"
+        __collection__ = "data__test_find"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -138,7 +138,7 @@ def test_find(database):
 
 def test_find_one(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_find_one"
+        __collection__ = "data__test_find_one"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -167,7 +167,7 @@ def test_find_one(database):
 
 def test_update_and_get(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_update_and_get"
+        __collection__ = "data__test_update_and_get"
         name: str
         value: int
 
@@ -186,7 +186,7 @@ def test_update_and_get(database):
 
 def test_set_and_get(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set_and_get"
+        __collection__ = "data__test_set_and_get"
         name: str
         value: int
 
@@ -205,7 +205,7 @@ def test_set_and_get(database):
 
 def test_update(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_update"
+        __collection__ = "data__test_update"
         name: str
         value: int
 
@@ -235,7 +235,7 @@ def test_update(database):
 
 def test_set(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set"
+        __collection__ = "data__test_set"
         name: str
         value: int
 
@@ -266,7 +266,7 @@ def test_set(database):
 
 def test_set_and_push(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set_and_push"
+        __collection__ = "data__test_set_and_push"
         name: str
         values: list[int]
 
@@ -290,7 +290,7 @@ def test_set_and_push(database):
 
 def test_update_one(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_update_one"
+        __collection__ = "data__test_update_one"
         name: str
         value: int
 
@@ -321,7 +321,7 @@ def test_update_one(database):
 
 def test_update_many(database):
     class Data(MongoModel[ObjectId]):
-        __collection__: str = "data__test_update_many"
+        __collection__ = "data__test_update_many"
         name: str
         value: int
 
@@ -358,7 +358,7 @@ def test_update_many(database):
 
 def test_set_many(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set_many"
+        __collection__ = "data__test_set_many"
         name: str
         value: int
 
@@ -386,7 +386,7 @@ def test_set_many(database):
 
 def test_delete_many(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_delete_many"
+        __collection__ = "data__test_delete_many"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -410,7 +410,7 @@ def test_delete_many(database):
 
 def test_delete_one(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_delete_one"
+        __collection__ = "data__test_delete_one"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -432,7 +432,7 @@ def test_delete_one(database):
 
 def test_delete(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_delete"
+        __collection__ = "data__test_delete"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -454,7 +454,7 @@ def test_delete(database):
 
 def test_count(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_count"
+        __collection__ = "data__test_count"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -473,7 +473,7 @@ def test_count(database):
 
 def test_exists(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_exists"
+        __collection__ = "data__test_exists"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -491,7 +491,7 @@ def test_exists(database):
 
 def test_drop_collection(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_drop_collection"
+        __collection__ = "data__test_drop_collection"
         name: str
 
     database.drop_collection(Data.__collection__)
@@ -507,11 +507,11 @@ def test_drop_collection(database):
 
 def test_nested_document(database):
     class NestedData(MongoModel[ObjectId]):
-        __collection__: str = "nested__test_nested_document"
+        __collection__ = "nested__test_nested_document"
         name: str
 
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_nested_document"
+        __collection__ = "data__test_nested_document"
         name: str
         nested: NestedData
 
@@ -532,7 +532,7 @@ def test_nested_document(database):
 
 def test_push(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_push"
+        __collection__ = "data__test_push"
         name: str
         items: list[str]
 
@@ -565,7 +565,7 @@ def test_push(database):
 
 def test_pull(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_pull"
+        __collection__ = "data__test_pull"
         name: str
         items: list[str]
 
@@ -599,7 +599,7 @@ def test_pull(database):
 
 def test_set_and_pull(database):
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set_and_pull"
+        __collection__ = "data__test_set_and_pull"
         name: str
         items: list[str]
 

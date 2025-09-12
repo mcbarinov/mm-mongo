@@ -22,10 +22,10 @@ class MongoModel[ID: IdType](BaseModel):
 
     id: ID
 
-    __collection__: str
+    __collection__: ClassVar[str]
     """MongoDB collection name (required)."""
 
-    __validator__: ClassVar[dict[str, object] | None] = None
+    __validator__: ClassVar[dict[str, object]] = {}
     """Optional MongoDB schema validator using JSON Schema format."""
 
     __indexes__: ClassVar[list[IndexModel | str]] = []

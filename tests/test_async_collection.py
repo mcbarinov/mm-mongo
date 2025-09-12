@@ -11,7 +11,7 @@ from mm_mongo.types import AsyncDatabaseAny
 
 async def test_init_collection(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_init_collection"
+        __collection__ = "data__test_init_collection"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -26,8 +26,8 @@ async def test_schema_validation(async_database: AsyncDatabaseAny) -> None:
         name: str
         value: int
 
-        __collection__: str = "data__test_schema_validation"
-        __validator__: ClassVar[dict[str, object]] = {
+        __collection__ = "data__test_schema_validation"
+        __validator__: ClassVar = {
             "$jsonSchema": {"required": ["name", "value"], "properties": {"value": {"minimum": 10}}},
         }
 
@@ -41,7 +41,7 @@ async def test_schema_validation(async_database: AsyncDatabaseAny) -> None:
 
 async def test_insert_one(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_insert_one"
+        __collection__ = "data__test_insert_one"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -54,7 +54,7 @@ async def test_insert_one(async_database: AsyncDatabaseAny) -> None:
 
 async def test_insert_many(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_insert_many"
+        __collection__ = "data__test_insert_many"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -69,7 +69,7 @@ async def test_insert_many(async_database: AsyncDatabaseAny) -> None:
 
 async def test_get_or_none(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_get_or_none"
+        __collection__ = "data__test_get_or_none"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -84,7 +84,7 @@ async def test_get_or_none(async_database: AsyncDatabaseAny) -> None:
 
 async def test_get(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_get"
+        __collection__ = "data__test_get"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -99,7 +99,7 @@ async def test_get(async_database: AsyncDatabaseAny) -> None:
 
 async def test_find(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_find"
+        __collection__ = "data__test_find"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -141,7 +141,7 @@ async def test_find(async_database: AsyncDatabaseAny) -> None:
 
 async def test_find_one(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_find_one"
+        __collection__ = "data__test_find_one"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -170,7 +170,7 @@ async def test_find_one(async_database: AsyncDatabaseAny) -> None:
 
 async def test_update_and_get(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_update_and_get"
+        __collection__ = "data__test_update_and_get"
         name: str
         value: int
 
@@ -189,7 +189,7 @@ async def test_update_and_get(async_database: AsyncDatabaseAny) -> None:
 
 async def test_set_and_get(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set_and_get"
+        __collection__ = "data__test_set_and_get"
         name: str
         value: int
 
@@ -208,7 +208,7 @@ async def test_set_and_get(async_database: AsyncDatabaseAny) -> None:
 
 async def test_update(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_update"
+        __collection__ = "data__test_update"
         name: str
         value: int
 
@@ -238,7 +238,7 @@ async def test_update(async_database: AsyncDatabaseAny) -> None:
 
 async def test_set(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set"
+        __collection__ = "data__test_set"
         name: str
         value: int
 
@@ -269,7 +269,7 @@ async def test_set(async_database: AsyncDatabaseAny) -> None:
 
 async def test_set_and_push(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set_and_push"
+        __collection__ = "data__test_set_and_push"
         name: str
         values: list[int]
 
@@ -293,7 +293,7 @@ async def test_set_and_push(async_database: AsyncDatabaseAny) -> None:
 
 async def test_update_one(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_update_one"
+        __collection__ = "data__test_update_one"
         name: str
         value: int
 
@@ -324,7 +324,7 @@ async def test_update_one(async_database: AsyncDatabaseAny) -> None:
 
 async def test_update_many(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[ObjectId]):
-        __collection__: str = "data__test_update_many"
+        __collection__ = "data__test_update_many"
         name: str
         value: int
 
@@ -364,7 +364,7 @@ async def test_update_many(async_database: AsyncDatabaseAny) -> None:
 
 async def test_set_many(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set_many"
+        __collection__ = "data__test_set_many"
         name: str
         value: int
 
@@ -392,7 +392,7 @@ async def test_set_many(async_database: AsyncDatabaseAny) -> None:
 
 async def test_delete_many(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_delete_many"
+        __collection__ = "data__test_delete_many"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -416,7 +416,7 @@ async def test_delete_many(async_database: AsyncDatabaseAny) -> None:
 
 async def test_delete_one(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_delete_one"
+        __collection__ = "data__test_delete_one"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -438,7 +438,7 @@ async def test_delete_one(async_database: AsyncDatabaseAny) -> None:
 
 async def test_delete(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_delete"
+        __collection__ = "data__test_delete"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -460,7 +460,7 @@ async def test_delete(async_database: AsyncDatabaseAny) -> None:
 
 async def test_count(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_count"
+        __collection__ = "data__test_count"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -479,7 +479,7 @@ async def test_count(async_database: AsyncDatabaseAny) -> None:
 
 async def test_exists(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_exists"
+        __collection__ = "data__test_exists"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -497,7 +497,7 @@ async def test_exists(async_database: AsyncDatabaseAny) -> None:
 
 async def test_drop_collection(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_drop_collection"
+        __collection__ = "data__test_drop_collection"
         name: str
 
     await async_database.drop_collection(Data.__collection__)
@@ -513,11 +513,11 @@ async def test_drop_collection(async_database: AsyncDatabaseAny) -> None:
 
 async def test_nested_document(async_database: AsyncDatabaseAny) -> None:
     class NestedData(MongoModel[ObjectId]):
-        __collection__: str = "nested__test_nested_document"
+        __collection__ = "nested__test_nested_document"
         name: str
 
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_nested_document"
+        __collection__ = "data__test_nested_document"
         name: str
         nested: NestedData
 
@@ -538,7 +538,7 @@ async def test_nested_document(async_database: AsyncDatabaseAny) -> None:
 
 async def test_push(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_push"
+        __collection__ = "data__test_push"
         name: str
         items: list[str]
 
@@ -571,7 +571,7 @@ async def test_push(async_database: AsyncDatabaseAny) -> None:
 
 async def test_pull(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_pull"
+        __collection__ = "data__test_pull"
         name: str
         items: list[str]
 
@@ -605,7 +605,7 @@ async def test_pull(async_database: AsyncDatabaseAny) -> None:
 
 async def test_set_and_pull(async_database: AsyncDatabaseAny) -> None:
     class Data(MongoModel[int]):
-        __collection__: str = "data__test_set_and_pull"
+        __collection__ = "data__test_set_and_pull"
         name: str
         items: list[str]
 

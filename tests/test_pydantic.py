@@ -6,7 +6,7 @@ from mm_mongo import MongoModel
 def test_monkey_patch_object_id():
     class Data(MongoModel[ObjectId]):
         name: str
-        __collection__: str = "data"
+        __collection__ = "data"
 
     id = ObjectId()
     data = Data(id=id, name="n1")

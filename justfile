@@ -14,8 +14,8 @@ format:
 test:
     uv run pytest -n auto tests
 
-lint: format
-    uv run ruff check src tests
+lint *args: format
+    uv run ruff check {{args}} src tests
     uv run mypy src
 
 audit:
