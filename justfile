@@ -16,6 +16,7 @@ test:
 
 lint *args: format
     uv run ruff check {{args}} src tests
+    uv run ty check
     uv run mypy src
 
 audit:
