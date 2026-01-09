@@ -2,9 +2,13 @@
 
 from urllib.parse import urlparse
 
+from bson.codec_options import CodecOptions, TypeRegistry
+from bson.decimal128 import DecimalDecoder, DecimalEncoder
 from pymongo import AsyncMongoClient, MongoClient, WriteConcern
 
 from mm_mongo.types import DocumentType
+
+_type_registry = TypeRegistry([DecimalEncoder(), DecimalDecoder()])
 
 
 class MongoConnection:
@@ -20,7 +24,11 @@ class MongoConnection:
             write_concern: Write concern for operations
         """
         self.client: MongoClient[DocumentType] = MongoClient(url, tz_aware=tz_aware)
-        self.database = self.client.get_database(urlparse(url).path[1:], write_concern=write_concern)
+        self.database = self.client.get_database(
+            urlparse(url).path[1:],
+            write_concern=write_concern,
+            codec_options=CodecOptions(type_registry=_type_registry, tz_aware=tz_aware),
+        )
 
 
 class AsyncMongoConnection:
@@ -36,4 +44,8 @@ class AsyncMongoConnection:
             write_concern: Write concern for operations
         """
         self.client: AsyncMongoClient[DocumentType] = AsyncMongoClient(url, tz_aware=tz_aware)
-        self.database = self.client.get_database(urlparse(url).path[1:], write_concern=write_concern)
+        self.database = self.client.get_database(
+            urlparse(url).path[1:],
+            write_concern=write_concern,
+            codec_options=CodecOptions(type_registry=_type_registry, tz_aware=tz_aware),
+        )

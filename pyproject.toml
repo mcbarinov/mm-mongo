@@ -1,6 +1,6 @@
 [project]
 name = "mm-mongo"
-version = "0.6.2"
+version = "0.6.3"
 description = "Type-safe PyMongo wrapper with Pydantic integration"
 requires-python = ">=3.13"
 dependencies = [

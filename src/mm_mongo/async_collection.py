@@ -7,7 +7,6 @@ from typing import Any
 
 from pymongo.asynchronous.collection import AsyncCollection, ReturnDocument
 
-from mm_mongo.codecs import codec_options
 from mm_mongo.errors import MongoNotFoundError
 from mm_mongo.model import MongoModel
 from mm_mongo.types import (
@@ -52,7 +51,7 @@ class AsyncMongoCollection[ID: IdType, T: MongoModel[Any]]:
 
         if not model_class.__collection__:
             raise ValueError("empty collection name")
-        instance.collection = database.get_collection(model_class.__collection__, codec_options)
+        instance.collection = database.get_collection(model_class.__collection__)
         if model_class.__indexes__:
             await instance.collection.create_indexes(parse_indexes(model_class.__indexes__))
         instance.model_class = model_class
@@ -68,9 +67,7 @@ class AsyncMongoCollection[ID: IdType, T: MongoModel[Any]]:
                         f"Failed to set schema validator for collection '{model_class.__collection__}': {error_msg}"
                     )
             else:
-                await database.create_collection(
-                    model_class.__collection__, codec_options=codec_options, validator=model_class.__validator__
-                )
+                await database.create_collection(model_class.__collection__, validator=model_class.__validator__)
 
         return instance
 

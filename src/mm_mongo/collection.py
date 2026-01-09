@@ -8,7 +8,6 @@ from typing import Any
 from pymongo import ReturnDocument
 from pymongo.synchronous.collection import Collection
 
-from mm_mongo.codecs import codec_options
 from mm_mongo.errors import MongoNotFoundError
 from mm_mongo.model import MongoModel
 from mm_mongo.types import (
@@ -54,7 +53,7 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
         if not model_class.__collection__:
             raise ValueError("empty collection name")
 
-        instance.collection = database.get_collection(model_class.__collection__, codec_options)
+        instance.collection = database.get_collection(model_class.__collection__)
         if model_class.__indexes__:
             instance.collection.create_indexes(parse_indexes(model_class.__indexes__))
 
@@ -70,9 +69,7 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
                         f"Failed to set schema validator for collection '{model_class.__collection__}': {error_msg}"
                     )
             else:
-                database.create_collection(
-                    model_class.__collection__, codec_options=codec_options, validator=model_class.__validator__
-                )
+                database.create_collection(model_class.__collection__, validator=model_class.__validator__)
 
         return instance
 
