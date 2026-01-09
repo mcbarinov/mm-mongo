@@ -98,9 +98,9 @@ class AsyncMongoCollection[ID: IdType, T: MongoModel[Any]]:
             raise MongoNotFoundError(id)
         return res
 
-    async def find(self, query: QueryType, sort: SortType = None, limit: int = 0) -> list[T]:
+    async def find(self, query: QueryType, sort: SortType = None, limit: int = 0, skip: int = 0) -> list[T]:
         """Find documents matching query."""
-        return [self._to_model(d) async for d in self.collection.find(query, sort=parse_sort(sort), limit=limit)]
+        return [self._to_model(d) async for d in self.collection.find(query, sort=parse_sort(sort), limit=limit, skip=skip)]
 
     async def find_one(self, query: QueryType, sort: SortType = None) -> T | None:
         """Find single document matching query."""
@@ -185,7 +185,7 @@ class AsyncMongoCollection[ID: IdType, T: MongoModel[Any]]:
 
     async def exists(self, query: QueryType) -> bool:
         """Check if any document matches query."""
-        return await self.count(query) > 0
+        return await self.collection.find_one(query, {"_id": 1}) is not None
 
     async def drop_collection(self) -> None:
         """Drop the entire collection."""

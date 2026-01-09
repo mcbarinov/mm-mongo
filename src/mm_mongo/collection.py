@@ -91,6 +91,7 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
         res = self.collection.find_one({"_id": id})
         if res:
             return self._to_model(res)
+        return None
 
     def get(self, id: ID) -> T:
         """Get document by ID, raise MongoNotFoundError if not found."""
@@ -99,9 +100,9 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
             raise MongoNotFoundError(id)
         return res
 
-    def find(self, query: QueryType, sort: SortType = None, limit: int = 0) -> list[T]:
+    def find(self, query: QueryType, sort: SortType = None, limit: int = 0, skip: int = 0) -> list[T]:
         """Find documents matching query."""
-        return [self._to_model(d) for d in self.collection.find(query, sort=parse_sort(sort), limit=limit)]
+        return [self._to_model(d) for d in self.collection.find(query, sort=parse_sort(sort), limit=limit, skip=skip)]
 
     def find_one(self, query: QueryType, sort: SortType = None) -> T | None:
         """Find single document matching query."""
@@ -186,7 +187,7 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
 
     def exists(self, query: QueryType) -> bool:
         """Check if any document matches query."""
-        return self.count(query) > 0
+        return self.collection.find_one(query, {"_id": 1}) is not None
 
     def drop_collection(self) -> None:
         """Drop the entire collection."""
@@ -196,6 +197,5 @@ class MongoCollection[ID: IdType, T: MongoModel[Any]]:
         """Convert MongoDB document to model instance."""
         # Create a copy to avoid mutating the original document
         doc_copy = dict(doc)
-        doc_copy["id"] = doc_copy["_id"]
-        del doc_copy["_id"]
+        doc_copy["id"] = doc_copy.pop("_id")
         return self.model_class(**doc_copy)
